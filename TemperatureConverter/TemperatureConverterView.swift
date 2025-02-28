@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TemperatureConverterView: View {
+    // MARK: - State Properties
     
     /// The user's input temperature as a string.
     @State private var inputTemperature = ""
@@ -16,8 +17,12 @@ struct TemperatureConverterView: View {
     /// The index of the selected output unit.
     @State private var selectedOutputUnit = 1
     
+    // MARK: - Constants
+    
     /// Available temperature units.
     private let temperatureUnits = ["Celsius", "Fahrenheit", "Kelvin"]
+    
+    // MARK: - Body
     
     var body: some View {
         VStack(spacing: 20) {
@@ -69,6 +74,44 @@ struct TemperatureConverterView: View {
             Spacer()
         }
         .padding()
+    }
+    
+    // MARK: - Functions
+    
+    /// Converts a given temperature from one unit to another.
+    /// - Parameters:
+    ///   - input: The temperature value to convert.
+    ///   - fromUnit: The index of the input unit (0 = Celsius, 1 = Fahrenheit, 2 = Kelvin).
+    ///   - toUnit: The index of the output unit (0 = Celsius, 1 = Fahrenheit, 2 = Kelvin).
+    /// - Returns: The converted temperature as a formatted string.
+    private func convertTemperature(_ input: String, from fromUnit: Int, to toUnit: Int) -> String {
+        let inputValue = Double(input) ?? 0
+        let valueInCelsius: Double
+        
+        // Convert input temperature to Celsius first
+        switch fromUnit {
+        case 0: valueInCelsius = inputValue // Celsius
+        case 1: valueInCelsius = (inputValue - 32) * 5 / 9 // Fahrenheit
+        case 2: valueInCelsius = inputValue - 273.15 // Kelvin
+        default: valueInCelsius = inputValue
+        }
+        
+        let outputValue: Double
+        
+        // Convert from Celsius to the desired output unit
+        switch toUnit {
+        case 0: outputValue = valueInCelsius // Celsius
+        case 1: outputValue = (valueInCelsius * 9 / 5) + 32 // Fahrenheit
+        case 2: outputValue = valueInCelsius + 273.15 // Kelvin
+        default: outputValue = valueInCelsius
+        }
+        
+        return String(format: "%.2f", outputValue)
+    }
+    
+    // MARK: - Computer Porerties
+    var convertedTemperature: String {
+        convertTemperature(inputTemperature, from: selectedInputUnit, to: selectedOutputUnit)
     }
 }
 
