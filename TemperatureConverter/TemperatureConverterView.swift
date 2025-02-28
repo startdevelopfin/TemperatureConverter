@@ -65,7 +65,7 @@ struct TemperatureConverterView: View {
             .padding(.horizontal)
             
             // Display converted temperature
-            Text("Converted Temperature: ")
+            Text("Converted Temperature: \(convertedTemperature)")
                 .font(.title2)
                 .fontWeight(.medium)
                 .padding()
