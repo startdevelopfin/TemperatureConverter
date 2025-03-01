@@ -120,12 +120,12 @@ struct TemperatureConverterView: View {
     /// - Returns: A `Text` view displaying the converted temperature.
     @ViewBuilder
     private func convertedTemperatureView() -> some View {
-        Text("Converted Temperature: \(convertedTemperature)")
+        Text("Converted Temperature: \(convertedTemperature) \(selectedOutputUnit.abbreviation)")
             .font(.title2)
             .fontWeight(.medium)
             .padding()
             .accessibilityLabel("Converted temperature")
-            .accessibilityValue("\(convertedTemperature) degrees")
+            .accessibilityValue("\(convertedTemperature) \(selectedOutputUnit.abbreviation)")
             .accessibilityHint("Displays the converted temperature based on the selected units")
     }
 }
