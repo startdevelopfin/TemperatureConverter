@@ -20,7 +20,7 @@ A simple, intuitive SwiftUI app that converts temperatures between Celsius, Fahr
 ### Installation
 1. **Clone the repository:**
    ```sh
-   git clone https://github.com/yourusername/TemperatureConverter.git
+   git clone https://github.com/startdevelopfin/TemperatureConverter.git
    cd TemperatureConverter
    ```
 2. **Open the project in Xcode:**
