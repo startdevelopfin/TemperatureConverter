@@ -11,16 +11,13 @@ struct TemperatureConverterView: View {
     // MARK: - State Properties
     
     /// The user's input temperature as a string.
-    @State private var inputTemperature = ""
-    /// The index of the selected input unit.
-    @State private var selectedInputUnit = 0
-    /// The index of the selected output unit.
-    @State private var selectedOutputUnit = 1
+    @State private var inputTemperature: String = ""
     
-    // MARK: - Constants
+    /// The selected input temperature unit.
+    @State private var selectedInputUnit: TemperatureUnit = .celsius
     
-    /// Available temperature units.
-    private let temperatureUnits = ["Celsius", "Fahrenheit", "Kelvin"]
+    /// The selected output temperature unit.
+    @State private var selectedOutputUnit: TemperatureUnit = .fahrenheit
     
     // MARK: - Body
     var body: some View {
@@ -42,39 +39,39 @@ struct TemperatureConverterView: View {
     /// Converts a given temperature from one unit to another.
     /// - Parameters:
     ///   - input: The temperature value to convert.
-    ///   - fromUnit: The index of the input unit (0 = Celsius, 1 = Fahrenheit, 2 = Kelvin).
-    ///   - toUnit: The index of the output unit (0 = Celsius, 1 = Fahrenheit, 2 = Kelvin).
+    ///   - fromUnit: The selected input unit.
+    ///   - toUnit: The selected output unit.
+    ///
     /// - Returns: The converted temperature as a formatted string.
-    private func convertTemperature(_ input: String, from fromUnit: Int, to toUnit: Int) -> String {
-        let inputValue = Double(input) ?? 0
-        let valueInCelsius: Double
+    private func convertTemperature(_ input: String, from fromUnit: TemperatureUnit, to toUnit: TemperatureUnit) -> String {
+        guard let inputValue = Double(input) else { return "0.0" }
+        var valueInCelsius: Double
         
         // Convert input temperature to Celsius first
         switch fromUnit {
-        case 0: valueInCelsius = inputValue // Celsius
-        case 1: valueInCelsius = (inputValue - 32) * 5 / 9 // Fahrenheit
-        case 2: valueInCelsius = inputValue - 273.15 // Kelvin
-        default: valueInCelsius = inputValue
+        case .celsius: valueInCelsius = inputValue
+        case .fahrenheit: valueInCelsius = (inputValue - 32) * 5 / 9
+        case .kelvin: valueInCelsius = inputValue - 273.15
         }
         
-        let outputValue: Double
+        var outputValue: Double
         
         // Convert from Celsius to the desired output unit
         switch toUnit {
-        case 0: outputValue = valueInCelsius // Celsius
-        case 1: outputValue = (valueInCelsius * 9 / 5) + 32 // Fahrenheit
-        case 2: outputValue = valueInCelsius + 273.15 // Kelvin
-        default: outputValue = valueInCelsius
+        case .celsius: outputValue = valueInCelsius
+        case .fahrenheit: outputValue = (valueInCelsius * 9 / 5) + 32
+        case .kelvin: outputValue = valueInCelsius + 273.15
         }
         
         return String(format: "%.2f", outputValue)
     }
     
-    // MARK: - Computed Porerties
+    // MARK: - Computed Properties
+    
+    /// The converted temperature based on the selected units.
     var convertedTemperature: String {
         convertTemperature(inputTemperature, from: selectedInputUnit, to: selectedOutputUnit)
     }
-    
     
     // MARK: - View Builder
     
@@ -99,15 +96,15 @@ struct TemperatureConverterView: View {
     ///
     /// - Parameters:
     ///   - title: The title displayed above the picker.
-    ///   - selection: A binding to the selected index of the temperature unit.
+    ///   - selection: A binding to the selected temperature unit.
     @ViewBuilder
-    private func unitPicker(title: String, selection: Binding<Int>) -> some View {
+    private func unitPicker(title: String, selection: Binding<TemperatureUnit>) -> some View {
         HStack {
             Text(title)
                 .fontWeight(.semibold)
             Picker(title, selection: selection) {
-                ForEach(0..<temperatureUnits.count, id: \.self) {
-                    Text(temperatureUnits[$0])
+                ForEach(TemperatureUnit.allCases) { unit in
+                    Text(unit.rawValue).tag(unit)  // Use tag for binding
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
@@ -131,8 +128,8 @@ struct TemperatureConverterView: View {
             .accessibilityValue("\(convertedTemperature) degrees")
             .accessibilityHint("Displays the converted temperature based on the selected units")
     }
-
 }
+
 
 #Preview {
     TemperatureConverterView()
