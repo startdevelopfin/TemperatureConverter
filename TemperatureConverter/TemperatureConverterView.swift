@@ -121,9 +121,11 @@ struct TemperatureConverterView: View {
     @ViewBuilder
     private func convertedTemperatureView() -> some View {
         Text("Converted Temperature: \(convertedTemperature) \(selectedOutputUnit.abbreviation)")
-            .font(.title2)
+            .font(.title3)
             .fontWeight(.medium)
             .padding()
+            .monospacedDigit()
+            .contentTransition(.numericText())
             .accessibilityLabel("Converted temperature")
             .accessibilityValue("\(convertedTemperature) \(selectedOutputUnit.abbreviation)")
             .accessibilityHint("Displays the converted temperature based on the selected units")
