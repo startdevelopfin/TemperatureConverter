@@ -23,61 +23,13 @@ struct TemperatureConverterView: View {
     private let temperatureUnits = ["Celsius", "Fahrenheit", "Kelvin"]
     
     // MARK: - Body
-    
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
-                TextField("Enter temperature", text: $inputTemperature)
-                    .keyboardType(.decimalPad)
-                    .padding()
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(8)
-                    .accessibilitySortPriority(1) // Ensures this is read first
-                    .accessibilityLabel("Temperature input field")
-                    .accessibilityHint("Enter a numerical value to be converted")
-                    .accessibilityValue(inputTemperature)
-                
-                // Input unit selection
-                HStack {
-                    Text("From:")
-                        .fontWeight(.semibold)
-                    Picker("Input Unit", selection: $selectedInputUnit) {
-                        ForEach(0..<temperatureUnits.count, id: \.self) {
-                            Text(temperatureUnits[$0])
-                        }
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                }
-                .accessibilityElement(children: .combine) // Groups related elements
-                .accessibilityLabel("Select input unit")
-                .accessibilityHint("Choose the unit of the entered temperature")
-
-                
-                // Output unit selection
-                HStack {
-                    Text("To:")
-                        .fontWeight(.semibold)
-                    Picker("Output Unit", selection: $selectedOutputUnit) {
-                        ForEach(0..<temperatureUnits.count, id: \..self) {
-                            Text(temperatureUnits[$0])
-                        }
-                    }
-                    .pickerStyle(SegmentedPickerStyle())
-                    .accessibilityLabel("Select output unit")
-                    .accessibilityHint("Choose the unit you want the temperature converted to")
-                    
-                }
-                .padding(.horizontal)
-                
-                // Display converted temperature
-                Text("Converted Temperature: \(convertedTemperature)")
-                    .font(.title2)
-                    .fontWeight(.medium)
-                    .padding()
-                    .accessibilityLabel("Converted temperature")
-                    .accessibilityValue("\(convertedTemperature) degrees")
-                    .accessibilityHint("Displays the converted temperature based on the selected units")
-                
+                inputField()
+                unitPicker(title: "From:", selection: $selectedInputUnit)
+                unitPicker(title: "To:", selection: $selectedOutputUnit)
+                convertedTemperatureView()
                 Spacer()
             }
             .padding()
@@ -118,10 +70,68 @@ struct TemperatureConverterView: View {
         return String(format: "%.2f", outputValue)
     }
     
-    // MARK: - Computer Porerties
+    // MARK: - Computed Porerties
     var convertedTemperature: String {
         convertTemperature(inputTemperature, from: selectedInputUnit, to: selectedOutputUnit)
     }
+    
+    
+    // MARK: - View Builder
+    
+    /// A view that displays an input field for entering the temperature value.
+    /// The field allows only decimal input and provides helpful accessibility hints for users.
+    ///
+    /// - Returns: A `TextField` view that allows the user to input a temperature.
+    @ViewBuilder
+    private func inputField() -> some View {
+        TextField("Enter temperature", text: $inputTemperature)
+            .keyboardType(.decimalPad)
+            .padding()
+            .background(Color.gray.opacity(0.2))
+            .cornerRadius(8)
+            .accessibilityLabel("Temperature input field")
+            .accessibilityHint("Enter a numerical value to be converted")
+            .accessibilityValue(inputTemperature)
+    }
+
+    /// A view that displays a segmented picker to select the temperature unit.
+    /// The picker allows users to choose between different temperature units such as Celsius, Fahrenheit, etc.
+    ///
+    /// - Parameters:
+    ///   - title: The title displayed above the picker.
+    ///   - selection: A binding to the selected index of the temperature unit.
+    @ViewBuilder
+    private func unitPicker(title: String, selection: Binding<Int>) -> some View {
+        HStack {
+            Text(title)
+                .fontWeight(.semibold)
+            Picker(title, selection: selection) {
+                ForEach(0..<temperatureUnits.count, id: \.self) {
+                    Text(temperatureUnits[$0])
+                }
+            }
+            .pickerStyle(SegmentedPickerStyle())
+            .accessibilityLabel(title)
+            .accessibilityHint("Select temperature unit")
+        }
+        .padding(.horizontal)
+    }
+
+    /// A view that displays the converted temperature value.
+    /// The value is shown in a title-sized font and is updated based on the selected temperature unit.
+    ///
+    /// - Returns: A `Text` view displaying the converted temperature.
+    @ViewBuilder
+    private func convertedTemperatureView() -> some View {
+        Text("Converted Temperature: \(convertedTemperature)")
+            .font(.title2)
+            .fontWeight(.medium)
+            .padding()
+            .accessibilityLabel("Converted temperature")
+            .accessibilityValue("\(convertedTemperature) degrees")
+            .accessibilityHint("Displays the converted temperature based on the selected units")
+    }
+
 }
 
 #Preview {
