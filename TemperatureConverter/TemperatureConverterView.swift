@@ -32,20 +32,26 @@ struct TemperatureConverterView: View {
                     .padding()
                     .background(Color.gray.opacity(0.2))
                     .cornerRadius(8)
+                    .accessibilitySortPriority(1) // Ensures this is read first
                     .accessibilityLabel("Temperature input field")
+                    .accessibilityHint("Enter a numerical value to be converted")
+                    .accessibilityValue(inputTemperature)
                 
                 // Input unit selection
                 HStack {
                     Text("From:")
                         .fontWeight(.semibold)
                     Picker("Input Unit", selection: $selectedInputUnit) {
-                        ForEach(0..<temperatureUnits.count, id: \..self) {
+                        ForEach(0..<temperatureUnits.count, id: \.self) {
                             Text(temperatureUnits[$0])
                         }
                     }
                     .pickerStyle(SegmentedPickerStyle())
                 }
-                .padding(.horizontal)
+                .accessibilityElement(children: .combine) // Groups related elements
+                .accessibilityLabel("Select input unit")
+                .accessibilityHint("Choose the unit of the entered temperature")
+
                 
                 // Output unit selection
                 HStack {
@@ -57,6 +63,9 @@ struct TemperatureConverterView: View {
                         }
                     }
                     .pickerStyle(SegmentedPickerStyle())
+                    .accessibilityLabel("Select output unit")
+                    .accessibilityHint("Choose the unit you want the temperature converted to")
+                    
                 }
                 .padding(.horizontal)
                 
@@ -65,7 +74,9 @@ struct TemperatureConverterView: View {
                     .font(.title2)
                     .fontWeight(.medium)
                     .padding()
-                    .accessibilityLabel("Converted temperature result")
+                    .accessibilityLabel("Converted temperature")
+                    .accessibilityValue("\(convertedTemperature) degrees")
+                    .accessibilityHint("Displays the converted temperature based on the selected units")
                 
                 Spacer()
             }
