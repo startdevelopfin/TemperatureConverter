@@ -14,7 +14,7 @@ A simple, intuitive SwiftUI app that converts temperatures between Celsius, Fahr
 ## 🚀 Getting Started
 ### Prerequisites
 - Xcode 15 or later
-- iOS 17 or later (Simulator or Physical Device)
+- iOS 17 or later
 <br></br>
 
 ### Installation
@@ -39,9 +39,6 @@ A simple, intuitive SwiftUI app that converts temperatures between Celsius, Fahr
 - **User Interface**: Uses `TextField`, `SegmentedPicker`, and `Text` for real-time conversion display.
 <br></br>
 
-### `TemperatureConverterApp.swift`
-- **Entry Point**: Defines the `@main` struct and launches `TemperatureConverterView`.
-<br></br>
 
 ## 🎨 UI Preview
 | Input | Converted Output |
